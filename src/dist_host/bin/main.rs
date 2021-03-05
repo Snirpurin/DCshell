@@ -44,12 +44,13 @@ fn main() {
 
 
 //function to recieve data
-fn rec(buffer: &mut [u8], stream: &mut TcpStream){
+/*fn rec(buffer: &mut [u8], stream: &mut TcpStream){
 
     println!("reciving...");
     let mut array_size: [u8;4] = [0;4];
     stream.read(&mut array_size).unwrap();
     let size = usize::from_be_bytes(array_size);
+    println!("size of sent pachake: {}",size);
 
 
     let mut data_size = 0;
@@ -66,7 +67,7 @@ fn rec(buffer: &mut [u8], stream: &mut TcpStream){
         
 
     }
-} 
+} */
 
 /*fn val(data: &[u8;16]) -> bool{
 
@@ -78,6 +79,32 @@ fn rec(buffer: &mut [u8], stream: &mut TcpStream){
     }
     return true;
 }*/
+
+//function to recieve data
+fn rec(buffer: &mut [u8], stream: &mut TcpStream){
+
+    println!("reciving...");
+    let mut array_size: [u8;4] = [0;4];
+    stream.read(&mut array_size).unwrap();
+    let size = usize::from_be_bytes(array_size);
+    println!("size of recieved package: {}",size);
+
+    let mut data_size = 0;
+    stream.read(&mut buffer[..]);
+    /*while ! match stream.read(&mut buffer[..]){
+        Ok(n) if n == size  => true,
+        Ok(a) => {data_size = data_size + a;
+            if data_size == size{
+                println!("recieved instr");
+                return;
+            }
+            false},
+        Err(_) => panic!("dist failes to read instruction"),
+    }{
+        
+
+    }*/
+} 
 
 
 
@@ -121,18 +148,33 @@ fn cmd_commands(stream: &mut TcpStream){
 */
 
     println!("about to rec commands");
-    let mut buffer:Vec<u8> = Vec::new(); 
-    rec(&mut buffer, stream);
+     
+    //rec(&mut buffer, stream);
 
-    println!("just got command");
-    let mut s = match std::str::from_utf8(&mut buffer) {
-        Ok(v) => v,
-        Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
-    };
+    let mut array_size: [u8;4] = [0;4];
+    stream.read(&mut array_size).unwrap();
+    let size = usize::from_be_bytes(array_size);
+    println!("size of recieved package: {}",size);
+    let mut buffer:Vec<u8> = Vec::with_capacity(size);
+    let mut buff: [u8;100] = [0;100];
+    stream.read(&mut buff[..]);
+    //stream.read_exact(&mut buffer).unwrap();
+    
+
+
+    println!("just got command og len: {}", buff.len());
+    println!("{:?}",buff);
+    let s =  std::str::from_utf8(& buff[0..size]).unwrap();
+    // let s = match std::str::from_utf8(&mut buffer) {
+    //     Ok(v) => {println!("{}",v);
+    //     v},
+    //     Err(e) => panic!("Invalid UTF-8 sequence: {}", e),
+    // };
     let story = "hey brey";
     //assert_eq!(s, story);
-    println!("command is {}",&s);
+    println!("command is {:?}",s);
     let mut commands: Vec<&str> = s.split(' ').collect();
+    commands.insert(0, "/C");
 
     //assert_eq!(commands, story);
     

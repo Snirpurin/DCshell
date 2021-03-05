@@ -46,7 +46,7 @@ fn command(stream: &mut TcpStream){
     let mut line = String::new();
     let b1 = std::io::stdin().read_line(&mut line).unwrap();
     //let len = line.len();
-    
+    println!("sending command {}",&line);
     send(line.as_bytes(), stream);
 
     
@@ -54,7 +54,7 @@ fn command(stream: &mut TcpStream){
 
 //function to recieve data
 fn rec(buffer: &mut [u8], stream: &mut TcpStream){
-
+    
     println!("reciving...");
     let mut array_size: [u8;4] = [0;4];
     stream.read(&mut array_size).unwrap();
@@ -62,7 +62,8 @@ fn rec(buffer: &mut [u8], stream: &mut TcpStream){
 
 
     let mut data_size = 0;
-    while ! match stream.read(&mut buffer[..]){
+    stream.read(&mut buffer[..]);
+    /*while ! match stream.read(&mut buffer[..]){
         Ok(n) if n == size  => true,
         Ok(a) => {data_size = data_size + a;
             if data_size == size{
@@ -74,17 +75,19 @@ fn rec(buffer: &mut [u8], stream: &mut TcpStream){
     }{
         
 
-    }
+    }*/
 } 
 
 
 fn send(buffer: & [u8], stream: &mut TcpStream){
-    
+    println!("sending command {:?}",std::str::from_utf8(buffer).unwrap());
     println!("sending...");
     let size = buffer.len();
     stream.write(&mut size.to_be_bytes()).unwrap();
     let mut data_size = 0;
-    while ! match stream.write(& buffer[..]){
+    println!("size of sent pachake: {}",size);
+    stream.write(& buffer[..]);
+    /*while ! match stream.write(& buffer[..]){
         Ok(size) => true,
         Ok(a) => {data_size = data_size + a;
             if data_size == size{
@@ -96,7 +99,7 @@ fn send(buffer: & [u8], stream: &mut TcpStream){
     }{
         
 
-    }
+    }*/
 } 
 
 
