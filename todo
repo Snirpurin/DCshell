@@ -1,0 +1,6 @@
+List of todo stuff:
+    Make send and recive only use 1 input (data)
+    Maked send and rec segment data and collect after rec
+    Make the protocol fault tolorent
+    Be able to send command output back
+    

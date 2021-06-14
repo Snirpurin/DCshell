@@ -178,11 +178,13 @@ fn cmd_commands(stream: &mut TcpStream){
 
     //assert_eq!(commands, story);
     
-    execute_command(commands);
-
+    let output = execute_command(commands);
+    
+    let n = stream.write_all(&output[..]).unwrap();
+    io::stdout().write_all(&output).unwrap();
 }
 
-fn execute_command(command: Vec<&str>){
+fn execute_command(command: Vec<&str>) -> Vec<u8> {
 
     println!("execute {:?}", &command[..]);
     
@@ -197,8 +199,11 @@ fn execute_command(command: Vec<&str>){
                 .output()
                 .expect("failed to execute process")
     };
-    let hello = output.status;
-    io::stdout().write_all(&output.stdout).unwrap();
+    
+    let hello = output.stdout;
+    //io::stdout().write_all(&hello).unwrap();
+    return hello;
+    
 
 }
 

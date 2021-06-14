@@ -46,8 +46,15 @@ fn command(stream: &mut TcpStream){
     let mut line = String::new();
     let b1 = std::io::stdin().read_line(&mut line).unwrap();
     //let len = line.len();
+    
     println!("sending command {}",&line);
     send(line.as_bytes(), stream);
+    let mut data: [u8;100] = [0;100];
+    stream.read(&mut data[..]).unwrap();
+
+    
+    println!("received outpot: {}", std::str::from_utf8(&data).unwrap());
+    println!("data size: {}", data.len())
 
     
 }
